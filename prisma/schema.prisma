@@ -11,10 +11,10 @@ datasource db {
 }
 
 model Product {
-  id          Int             @id @default(autoincrement()) @map("_id")
+  id          String             @id 
   name        String          // Teh
-  price       Float           // Harga 5000
-  category_id Int?            @map("category_id")
+  author      String          // jamal
+  category_id String?            @map("category_id")
   category    CategoryProduct? @relation(fields: [category_id], references: [id])
   created_at  DateTime        @default(now()) @map("created_at")
   updated_at  DateTime        @updatedAt @map("updated_at")
@@ -23,7 +23,7 @@ model Product {
 }
 
 model CategoryProduct {
-  id       Int       @id @default(autoincrement()) @map("_id")
+  id       String       @id
   name               String    // Category Product Name: makanan & minuman
   created_at         DateTime  @default(now())
   updated_at         DateTime  @updatedAt

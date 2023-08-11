@@ -6,8 +6,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('POS-API')
-    .setDescription('POS API description')
+    .setTitle('BOOKSHELF-API')
+    .setDescription('Ini adalah BOOKSHELF API')
     .setVersion('1.0')
     .addTag('End Point')
     .build();

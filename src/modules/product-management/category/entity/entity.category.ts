@@ -4,7 +4,7 @@ export class CategoryEntity {
   // created_at         DateTime  @default(now())
   // updated_at         DateTime  @updatedAt
   // Product            Product[]
-  id?: number;
+  id?: string;
   name: string;
   created_at?: Date = new Date();
   updated_at?: Date = new Date();

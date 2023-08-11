@@ -1,9 +1,9 @@
 export interface CreateCategoryProps {
-  id?: number;
+  id?: string;
   name: string;
 }
 
 export interface UpdateCategoryProps {
-  id: number;
+  id: string;
   name: string;
 }
