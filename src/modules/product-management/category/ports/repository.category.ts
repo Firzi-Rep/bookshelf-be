@@ -16,11 +16,11 @@ export interface CategoryRepository {
 
   // findById(id: string): Promise<CategoryEntity>;
 
-  // findMany(props?: CategoryFindManyQueryProps): Promise<CategoryEntity[]>;
+  findMany(props?: CategoryFindManyQueryProps): Promise<CategoryEntity[]>;
 
-  // countMany(props?: CategoryFindManyQueryProps): Promise<number>;
+  countMany(props?: CategoryFindManyQueryProps): Promise<number>;
 
-  // update(props: UpdateCategoryProps): Promise<CategoryEntity>;
+  update(props: UpdateCategoryProps): Promise<CategoryEntity>;
 
   // deleteMany(ids: string[]): Promise<void>;
 }

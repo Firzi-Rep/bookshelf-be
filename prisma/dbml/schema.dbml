@@ -1,0 +1,35 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table product {
+  id String [pk]
+  name String [not null]
+  author String [not null]
+  category_id String
+  genre_id String
+  category category_product
+  genre genre_product
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+}
+
+Table category_product {
+  id String [pk]
+  name String [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  Product product [not null]
+}
+
+Table genre_product {
+  id String [pk]
+  name String [not null]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  products product [not null]
+}
+
+Ref: product.category_id > category_product.id
+
+Ref: product.genre_id > genre_product.id

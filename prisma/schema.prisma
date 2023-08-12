@@ -5,6 +5,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator dbml {
+    provider = "prisma-dbml-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -15,7 +19,9 @@ model Product {
   name        String          // Teh
   author      String          // jamal
   category_id String?            @map("category_id")
+  genre_id    String?           @map("genre_id")
   category    CategoryProduct? @relation(fields: [category_id], references: [id])
+  genre     GenreProduct?    @relation(fields: [genre_id], references: [id])
   created_at  DateTime        @default(now()) @map("created_at")
   updated_at  DateTime        @updatedAt @map("updated_at")
 
@@ -30,4 +36,14 @@ model CategoryProduct {
   Product            Product[]
 
   @@map("category_product")
+}
+
+model GenreProduct {
+  id        String      @id
+  name      String
+  created_at DateTime    @default(now())
+  updated_at DateTime
+  products  Product[]
+
+  @@map("genre_product")
 }

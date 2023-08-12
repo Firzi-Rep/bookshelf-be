@@ -1,6 +1,7 @@
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule, QueryHandler } from '@nestjs/cqrs';
 import { CreateProductCommandHandler } from 'src/modules/product-management/product/application/command/create.product.command';
+import { DeleteProductCommandHandler } from 'src/modules/product-management/product/application/command/delete.product.command';
 import { UpdateProductCommandHandler } from 'src/modules/product-management/product/application/command/update.product.command';
 import { PRODUCT_REPOSITORY } from 'src/modules/product-management/product/application/ports/repository.product';
 import { ProductDetailQueryHandler } from 'src/modules/product-management/product/application/query/detail.query.product';
@@ -17,7 +18,7 @@ const repositories: Provider[] = [
 const commands: Provider[] = [
   CreateProductCommandHandler,
   UpdateProductCommandHandler,
-  // ProductDeleteCommandHandler,
+  DeleteProductCommandHandler,
 ];
 
 const queryHandlers: Provider[] = [

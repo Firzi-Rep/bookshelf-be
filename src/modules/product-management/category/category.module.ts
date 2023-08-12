@@ -4,6 +4,8 @@ import { CategoryPostgresqlAdapter } from 'src/modules/product-management/catego
 import { CategoryCreateCommandHandler } from 'src/modules/product-management/category/command/create.command.category';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CategoryController } from 'src/modules/product-management/category/controller/controller.category';
+import { CategoryFindManyQueryHandler } from 'src/modules/product-management/category/queries/category.find.many.query';
+import { UpdateCategoryCommandHandler } from 'src/modules/product-management/category/command/update.category.command';
 
 const repositories: Provider[] = [
   {
@@ -13,14 +15,14 @@ const repositories: Provider[] = [
 ];
 const commands: Provider[] = [
   CategoryCreateCommandHandler,
-  // CategoryUpdateCommandHandler,
+  UpdateCategoryCommandHandler,
   // CategoryDeleteCommandHandler,
   //   ProductUpdateCommandHandler,
 ];
 
 const queryHandlers: Provider[] = [
   CategoryCreateCommandHandler,
-  // CategoryFindManyQueryHandler,
+  CategoryFindManyQueryHandler,
 ];
 
 @Module({

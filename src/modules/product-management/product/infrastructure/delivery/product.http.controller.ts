@@ -32,6 +32,11 @@ import {
   UpdateProductCommand,
   UpdateProductCommandResult,
 } from 'src/modules/product-management/product/application/command/update.product.command';
+import { DeleteProductManyDto } from 'src/modules/product-management/product/infrastructure/dto/delete.product.dto';
+import {
+  DeleteProductCommand,
+  DeleteProductCommandResult,
+} from 'src/modules/product-management/product/application/command/delete.product.command';
 
 @Controller('product-management/products')
 @ApiTags('Product')
@@ -126,5 +131,24 @@ export class ProductController {
     } catch (e) {
       throw e;
     }
+  }
+
+  @Post('delete-many')
+  async deleteMany(@Body() dto: DeleteProductManyDto) {
+    // console.log("masuk ke controller create product dengan payload",dto)
+    const command = Builder<DeleteProductCommand>(DeleteProductCommand, {
+      ...dto,
+    }).build();
+
+    await this.commandBus.execute<
+      DeleteProductCommand,
+      DeleteProductCommandResult
+    >(command);
+
+    return {
+      statusCode: 200,
+      message: 'success',
+      data: null,
+    };
   }
 }

@@ -19,6 +19,21 @@ import {
   CategoryCreateCommandResult,
 } from 'src/modules/product-management/category/command/create.command.category';
 import { CategoryCreateDto } from 'src/modules/product-management/category/dto/create.category.dto';
+import { CategoryFindManyQueryDto } from 'src/modules/product-management/category/dto/find.many.category.dto';
+import {
+  CategoryFindManyQuery,
+  CategoryFindManyQueryResult,
+} from 'src/modules/product-management/category/queries/category.find.many.query';
+import {
+  baseHttpResponseHelper,
+  basePaginatedResponseHelper,
+} from 'src/core/helper/base.response.helper';
+import { Response } from 'express';
+import { CategoryUpdateDto } from 'src/modules/product-management/category/dto/update.category.dto';
+import {
+  UpdateCategoryCommand,
+  UpdateCategoryCommandResult,
+} from 'src/modules/product-management/category/command/update.category.command';
 
 @Controller('product-management/category')
 @ApiTags('Category')
@@ -53,49 +68,49 @@ export class CategoryController {
     }
   }
 
-  // @Get()
-  // async findMany(@Res() res: Response, @Query() dto: CategoryFindManyQueryDto) {
-  //   const builder = Builder<CategoryFindManyQuery>(CategoryFindManyQuery, {
-  //     ...dto,
-  //   });
+  @Get()
+  async findMany(@Res() res: Response, @Query() dto: CategoryFindManyQueryDto) {
+    const builder = Builder<CategoryFindManyQuery>(CategoryFindManyQuery, {
+      ...dto,
+    });
 
-  //   const { data, total } = await this.queryBus.execute<
-  //     CategoryFindManyQuery,
-  //     CategoryFindManyQueryResult
-  //   >(builder.build());
+    const { data, total } = await this.queryBus.execute<
+      CategoryFindManyQuery,
+      CategoryFindManyQueryResult
+    >(builder.build());
 
-  //   return basePaginatedResponseHelper(res, {
-  //     data: data,
-  //     total,
-  //     page: dto.page,
-  //     per_page: dto.limit,
-  //   });
-  // }
+    return basePaginatedResponseHelper(res, {
+      data: data,
+      // total,
+      // page: dto.page,
+      // per_page: dto.limit,
+    });
+  }
 
-  // @Put(':id')
-  // async update(
-  //   @Res() res: Response,
-  //   @Body() dto: CategoryUpdateDto,
-  //   @Param('id') id: string,
-  // ) {
-  //   try {
-  //     const command = Builder<CategoryUpdateCommand>(CategoryUpdateCommand, {
-  //       ...dto,
-  //       id,
-  //     }).build();
+  @Put(':id')
+  async update(
+    @Res() res: Response,
+    @Body() dto: CategoryUpdateDto,
+    @Param('id') id: string,
+  ) {
+    try {
+      const command = Builder<UpdateCategoryCommand>(UpdateCategoryCommand, {
+        ...dto,
+        id,
+      }).build();
 
-  //     const result = await this.commandBus.execute<
-  //       CategoryUpdateCommand,
-  //       CategoryUpdateCommandResult
-  //     >(command);
+      const result = await this.commandBus.execute<
+        UpdateCategoryCommand,
+        UpdateCategoryCommandResult
+      >(command);
 
-  //     return baseHttpResponseHelper(res, {
-  //       data: result,
-  //     });
-  //   } catch (e) {
-  //     throw e;
-  //   }
-  // }
+      return baseHttpResponseHelper(res, {
+        data: result,
+      });
+    } catch (e) {
+      throw e;
+    }
+  }
 
   // @Post('delete-many')
   // async deleteMany(@Body() dto: CategoryDeleteManyDto) {

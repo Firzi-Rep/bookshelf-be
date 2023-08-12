@@ -22,7 +22,7 @@ export interface ProductRepository {
 
   update(props: UpdateProductProps): Promise<ProductEntity>;
 
-  // deleteById(id: string): Promise<void>;
+  deleteById(id: string): Promise<void>;
 
-  // deleteMany(ids: string[]): Promise<void>;
+  deleteMany(ids: string[]): Promise<void>;
 }

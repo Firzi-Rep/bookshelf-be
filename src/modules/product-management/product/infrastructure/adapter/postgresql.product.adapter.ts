@@ -140,4 +140,32 @@ export class ProductPostgresqlAdapter implements ProductRepository {
       throw error;
     }
   }
+
+  async deleteById(id: string): Promise<void> {
+    try {
+      await this.prismaService.product.delete({
+        where: {
+          id: id,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  async deleteMany(ids: string[]): Promise<void> {
+    try {
+      await this.prismaService.product.deleteMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
 }
