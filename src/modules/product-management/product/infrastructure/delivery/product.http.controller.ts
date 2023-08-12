@@ -1,4 +1,13 @@
-import { Body, Controller, Post, Get, Res, Query, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Get,
+  Res,
+  Query,
+  Param,
+  Put,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiTags } from '@nestjs/swagger';
 import { Builder } from 'builder-pattern';
@@ -18,6 +27,11 @@ import { CreateProductDto } from 'src/modules/product-management/product/infrast
 import { FindManyQueryProductDto } from 'src/modules/product-management/product/infrastructure/dto/find.many.query.product.dto';
 import { Response } from 'express';
 import { ProductDetailQuery } from 'src/modules/product-management/product/application/query/detail.query.product';
+import { UpdateProductDto } from 'src/modules/product-management/product/infrastructure/dto/update.product.dto';
+import {
+  UpdateProductCommand,
+  UpdateProductCommandResult,
+} from 'src/modules/product-management/product/application/command/update.product.command';
 
 @Controller('product-management/products')
 @ApiTags('Product')
@@ -64,9 +78,9 @@ export class ProductController {
 
     return basePaginatedResponseHelper(res, {
       data: data,
-      total,
-      page: dto.page,
-      per_page: dto.limit,
+      // total,
+      // page: dto.page,
+      // per_page: dto.limit,
     });
   }
 
@@ -86,6 +100,31 @@ export class ProductController {
       });
     } catch (e) {
       console.trace(e);
+    }
+  }
+
+  @Put(':id')
+  async update(
+    @Res() res: Response,
+    @Body() dto: UpdateProductDto,
+    @Param('id') id: string,
+  ) {
+    try {
+      const command = Builder<UpdateProductCommand>(UpdateProductCommand, {
+        ...dto,
+        id,
+      }).build();
+
+      const result = await this.commandBus.execute<
+        UpdateProductCommand,
+        UpdateProductCommandResult
+      >(command);
+
+      return baseHttpResponseHelper(res, {
+        data: result,
+      });
+    } catch (e) {
+      throw e;
     }
   }
 }

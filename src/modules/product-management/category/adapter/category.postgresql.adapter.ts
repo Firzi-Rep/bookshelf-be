@@ -4,6 +4,7 @@ import { CategoryEntity } from 'src/modules/product-management/category/entity/e
 import { CategoryRepository } from 'src/modules/product-management/category/ports/repository.category';
 import { CreateCategoryProps } from 'src/modules/product-management/category/types/props.category';
 import { PrismaService } from 'src/modules/shared/prisma/prisma.service';
+const { v4: uuidv4 } = require('uuid');
 
 @Injectable()
 export class CategoryPostgresqlAdapter implements CategoryRepository {
@@ -18,7 +19,7 @@ export class CategoryPostgresqlAdapter implements CategoryRepository {
     try {
       const rawCreated = await prisma.categoryProduct.create({
         data: {
-          id: props.id,
+          id: uuidv4(),
           name: props.name,
         },
       });

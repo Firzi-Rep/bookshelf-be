@@ -4,6 +4,7 @@ import { ProductRepository } from 'src/modules/product-management/product/applic
 import { ProductEntity } from 'src/modules/product-management/product/domain/entity.product';
 
 export class CreateProductCommand {
+  id: string;
   name: string;
   author: string;
   category_id?: string;

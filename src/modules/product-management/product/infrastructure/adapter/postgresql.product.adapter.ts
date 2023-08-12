@@ -3,11 +3,15 @@ import {
   FindManyProductQueryProps,
   ProductRepository,
 } from 'src/modules/product-management/product/application/ports/repository.product';
-import { CreateProductProps } from 'src/modules/product-management/product/application/types/props.product';
+import {
+  CreateProductProps,
+  UpdateProductProps,
+} from 'src/modules/product-management/product/application/types/props.product';
 import { ProductEntity } from 'src/modules/product-management/product/domain/entity.product';
 import { PrismaService } from 'src/modules/shared/prisma/prisma.service';
 import { Builder } from 'builder-pattern';
 import { CategoryEntity } from 'src/modules/product-management/category/entity/entity.category';
+const { v4: uuidv4 } = require('uuid');
 
 @Injectable()
 export class ProductPostgresqlAdapter implements ProductRepository {
@@ -23,6 +27,7 @@ export class ProductPostgresqlAdapter implements ProductRepository {
       // console.log('masuk adapter', props)
       const result = await prisma.product.create({
         data: {
+          id: uuidv4(),
           name: props.name,
           author: props.author,
           category_id: props.category_id,
@@ -104,5 +109,35 @@ export class ProductPostgresqlAdapter implements ProductRepository {
     const result = await this.prismaService.product.count();
 
     return result;
+  }
+
+  async update(
+    props: UpdateProductProps,
+    session?: PrismaService,
+  ): Promise<ProductEntity> {
+    try {
+      let prisma = this.prismaService;
+      if (session) prisma = session;
+
+      const result = await prisma.product.update({
+        where: {
+          id: props.id,
+        },
+        data: {
+          name: props.name,
+          author: props.author,
+          category_id: props.category_id,
+        },
+      });
+
+      const entity = Builder<ProductEntity>(ProductEntity, {
+        ...result,
+      }).build();
+
+      return entity;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 }
