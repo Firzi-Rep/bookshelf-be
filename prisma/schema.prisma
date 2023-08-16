@@ -12,6 +12,34 @@ generator dbml {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+
+}
+
+model User {
+  id           String       @id 
+  name         String
+  email        String       @unique
+  password     String
+  role         Role         @default(USER)
+  post         Post[]
+  profileImage Bytes? // setelah ini harus diisi apa?
+
+  @@map("user")
+}
+
+model Post {
+  id     Int    @id
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+  title  String
+  content String
+
+  @@map("post")
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 model Product {

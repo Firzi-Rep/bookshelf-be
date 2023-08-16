@@ -24,5 +24,5 @@ export interface GenreRepository {
 
   // deleteById(id: string): Promise<void>;
 
-  // deleteMany(ids: string[]): Promise<void>;
+  deleteMany(ids: string[]): Promise<void>;
 }

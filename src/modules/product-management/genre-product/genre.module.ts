@@ -2,6 +2,7 @@ import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { UpdateCategoryCommandHandler } from 'src/modules/product-management/category/command/update.category.command';
 import { CreateGenreCommandHandler } from 'src/modules/product-management/genre-product/application/command/create.genre.command';
+import { DeleteGenreCommandHandler } from 'src/modules/product-management/genre-product/application/command/delete.genre.command';
 import {
   UpdateGenreCommandHandler,
   UpdateGenreCommandResult,
@@ -19,7 +20,7 @@ const repositories: Provider[] = [
 const commands: Provider[] = [
   CreateGenreCommandHandler,
   UpdateGenreCommandHandler,
-  // CategoryDeleteCommandHandler,
+  DeleteGenreCommandHandler,
   // ProductUpdateCommandHandler,
 ];
 

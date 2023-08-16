@@ -66,4 +66,19 @@ export class PostgresqlGenreAdapter implements GenreRepository {
       throw error;
     }
   }
+
+  async deleteMany(ids: string[]): Promise<void> {
+    try {
+      await this.prismaService.genreProduct.deleteMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
 }

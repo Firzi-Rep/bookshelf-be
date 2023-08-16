@@ -2,6 +2,24 @@
 //// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 //// ------------------------------------------------------
 
+Table user {
+  id String [pk]
+  name String [not null]
+  email String [unique, not null]
+  password String [not null]
+  role Role [not null, default: 'USER']
+  post post [not null]
+  profileImage Bytes
+}
+
+Table post {
+  id Int [pk]
+  userId String [not null]
+  user user [not null]
+  title String [not null]
+  content String [not null]
+}
+
 Table product {
   id String [pk]
   name String [not null]
@@ -29,6 +47,13 @@ Table genre_product {
   updated_at DateTime [not null]
   products product [not null]
 }
+
+Enum Role {
+  USER
+  ADMIN
+}
+
+Ref: post.userId > user.id
 
 Ref: product.category_id > category_product.id
 

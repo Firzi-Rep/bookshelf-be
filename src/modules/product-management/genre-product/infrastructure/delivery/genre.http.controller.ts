@@ -31,6 +31,11 @@ import {
   UpdateGenreCommand,
   UpdateGenreCommandResult,
 } from 'src/modules/product-management/genre-product/application/command/update.genre.command';
+import { DeleteGenreManyDto } from 'src/modules/product-management/genre-product/infrastructure/dto/delete.genre.dto';
+import {
+  DeleteGenreCommand,
+  DeleteGenreCommandResult,
+} from 'src/modules/product-management/genre-product/application/command/delete.genre.command';
 
 @Controller('product-management/genre')
 @ApiTags('Genre')
@@ -88,5 +93,23 @@ export class GenreController {
     } catch (e) {
       throw e;
     }
+  }
+
+  @Post('delete-many')
+  async deleteMany(@Body() dto: DeleteGenreManyDto) {
+    // console.log("masuk ke controller create product dengan payload",dto)
+    const command = Builder<DeleteGenreCommand>(DeleteGenreCommand, {
+      ...dto,
+    }).build();
+
+    await this.commandBus.execute<DeleteGenreCommand, DeleteGenreCommandResult>(
+      command,
+    );
+
+    return {
+      statusCode: 200,
+      message: 'success',
+      data: null,
+    };
   }
 }
