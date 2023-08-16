@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Builder } from 'builder-pattern';
 import { GenreRepository } from 'src/modules/product-management/genre-product/application/ports/genre.repository';
-import { CreateGenreProps } from 'src/modules/product-management/genre-product/application/types/genre.property';
+import {
+  CreateGenreProps,
+  UpdateGenreProps,
+} from 'src/modules/product-management/genre-product/application/types/genre.property';
 import { GenreEntity } from 'src/modules/product-management/genre-product/domain/genre.entity';
 import { PrismaService } from 'src/modules/shared/prisma/prisma.service';
 const { v4: uuidv4 } = require('uuid');
@@ -32,6 +35,34 @@ export class PostgresqlGenreAdapter implements GenreRepository {
       return createdEntity;
     } catch (error) {
       console.trace(error);
+      throw error;
+    }
+  }
+
+  async update(
+    props: UpdateGenreProps,
+    session?: PrismaService,
+  ): Promise<GenreEntity> {
+    try {
+      let prisma = this.prismaService;
+      if (session) prisma = session;
+
+      const result = await prisma.genreProduct.update({
+        where: {
+          id: props.id,
+        },
+        data: {
+          name: props.name,
+        },
+      });
+
+      const entity = Builder<GenreEntity>(GenreEntity, {
+        ...result,
+      }).build();
+
+      return entity;
+    } catch (error) {
+      console.log(error);
       throw error;
     }
   }

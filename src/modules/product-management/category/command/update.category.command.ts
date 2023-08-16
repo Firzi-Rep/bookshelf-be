@@ -12,7 +12,7 @@ export class UpdateCategoryCommand {
 }
 
 export class UpdateCategoryCommandResult {
-  product: CategoryEntity;
+  category: CategoryEntity;
 }
 
 @CommandHandler(UpdateCategoryCommand)

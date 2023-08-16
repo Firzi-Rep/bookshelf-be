@@ -1,4 +1,7 @@
-import { CreateGenreProps } from 'src/modules/product-management/genre-product/application/types/genre.property';
+import {
+  CreateGenreProps,
+  UpdateGenreProps,
+} from 'src/modules/product-management/genre-product/application/types/genre.property';
 import { GenreEntity } from 'src/modules/product-management/genre-product/domain/genre.entity';
 
 export const GENRE_REPOSITORY = 'GENRE_REPOSITORY';
@@ -17,7 +20,7 @@ export interface GenreRepository {
 
   // countMany(props?: FindManyProductQueryProps): Promise<number>;
 
-  // update(props: UpdateProductProps): Promise<ProductEntity>;
+  update(props: UpdateGenreProps): Promise<GenreEntity>;
 
   // deleteById(id: string): Promise<void>;
 

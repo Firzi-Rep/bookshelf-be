@@ -22,5 +22,7 @@ export interface CategoryRepository {
 
   update(props: UpdateCategoryProps): Promise<CategoryEntity>;
 
-  // deleteMany(ids: string[]): Promise<void>;
+  deleteById(id: string): Promise<void>;
+
+  deleteMany(ids: string[]): Promise<void>;
 }

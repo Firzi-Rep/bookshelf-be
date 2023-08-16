@@ -1,6 +1,11 @@
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { UpdateCategoryCommandHandler } from 'src/modules/product-management/category/command/update.category.command';
 import { CreateGenreCommandHandler } from 'src/modules/product-management/genre-product/application/command/create.genre.command';
+import {
+  UpdateGenreCommandHandler,
+  UpdateGenreCommandResult,
+} from 'src/modules/product-management/genre-product/application/command/update.genre.command';
 import { GENRE_REPOSITORY } from 'src/modules/product-management/genre-product/application/ports/genre.repository';
 import { PostgresqlGenreAdapter } from 'src/modules/product-management/genre-product/infrastructure/adapter/postgresql.genre';
 import { GenreController } from 'src/modules/product-management/genre-product/infrastructure/delivery/genre.http.controller';
@@ -13,7 +18,7 @@ const repositories: Provider[] = [
 ];
 const commands: Provider[] = [
   CreateGenreCommandHandler,
-  // UpdateCategoryCommandHandler,
+  UpdateGenreCommandHandler,
   // CategoryDeleteCommandHandler,
   // ProductUpdateCommandHandler,
 ];

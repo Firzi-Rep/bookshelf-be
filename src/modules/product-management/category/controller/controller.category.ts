@@ -34,6 +34,11 @@ import {
   UpdateCategoryCommand,
   UpdateCategoryCommandResult,
 } from 'src/modules/product-management/category/command/update.category.command';
+import { CategoryDeleteManyDto } from 'src/modules/product-management/category/dto/delete.category.dto';
+import {
+  DeleteCategoryCommand,
+  DeleteCategoryCommandResult,
+} from 'src/modules/product-management/category/command/delete.category.command';
 
 @Controller('product-management/category')
 @ApiTags('Category')
@@ -112,21 +117,22 @@ export class CategoryController {
     }
   }
 
-  // @Post('delete-many')
-  // async deleteMany(@Body() dto: CategoryDeleteManyDto) {
-  //   // console.log("masuk ke controller create product dengan payload",dto)
-  //   const command = Builder<CategoryDeleteCommand>(CategoryDeleteCommand, {
-  //     ...dto,
-  //   }).build();
+  @Post('delete-many')
+  async deleteMany(@Body() dto: CategoryDeleteManyDto) {
+    // console.log("masuk ke controller create product dengan payload",dto)
+    const command = Builder<DeleteCategoryCommand>(DeleteCategoryCommand, {
+      ...dto,
+    }).build();
 
-  //   await this.commandBus.execute<
-  //     CategoryDeleteCommand,
-  //     CategoryDeleteCommandResult
-  //   >(command);
+    await this.commandBus.execute<
+      DeleteCategoryCommand,
+      DeleteCategoryCommandResult
+    >(command);
 
-  //   return {
-  //     statusCode: 200,
-  //     message: 'success',
-  //     data: null,
-  //   };
+    return {
+      statusCode: 200,
+      message: 'success',
+      data: null,
+    };
+  }
 }

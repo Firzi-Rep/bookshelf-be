@@ -105,4 +105,32 @@ export class CategoryPostgresqlAdapter implements CategoryRepository {
       throw error;
     }
   }
+
+  async deleteById(id: string): Promise<void> {
+    try {
+      await this.prismaService.categoryProduct.delete({
+        where: {
+          id: id,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  async deleteMany(ids: string[]): Promise<void> {
+    try {
+      await this.prismaService.categoryProduct.deleteMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
 }

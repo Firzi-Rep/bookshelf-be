@@ -6,6 +6,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { CategoryController } from 'src/modules/product-management/category/controller/controller.category';
 import { CategoryFindManyQueryHandler } from 'src/modules/product-management/category/queries/category.find.many.query';
 import { UpdateCategoryCommandHandler } from 'src/modules/product-management/category/command/update.category.command';
+import { DeleteProductCommandHandler } from 'src/modules/product-management/category/command/delete.category.command';
 
 const repositories: Provider[] = [
   {
@@ -16,7 +17,7 @@ const repositories: Provider[] = [
 const commands: Provider[] = [
   CategoryCreateCommandHandler,
   UpdateCategoryCommandHandler,
-  // CategoryDeleteCommandHandler,
+  DeleteProductCommandHandler,
   //   ProductUpdateCommandHandler,
 ];
 
