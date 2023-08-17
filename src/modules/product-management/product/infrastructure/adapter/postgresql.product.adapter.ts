@@ -11,7 +11,7 @@ import { ProductEntity } from 'src/modules/product-management/product/domain/ent
 import { PrismaService } from 'src/modules/shared/prisma/prisma.service';
 import { Builder } from 'builder-pattern';
 import { CategoryEntity } from 'src/modules/product-management/category/entity/entity.category';
-const { v4: uuidv4 } = require('uuid');
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ProductPostgresqlAdapter implements ProductRepository {

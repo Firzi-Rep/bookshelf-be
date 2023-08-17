@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
+import { ApiTags } from '@nestjs/swagger';
 import { Builder } from 'builder-pattern';
 import { BaseHttpResponseDto } from 'src/core/dto/base.http.response.dto';
 import { baseHttpResponseHelper } from 'src/core/helper/base.response.helper';
@@ -10,6 +11,7 @@ import {
 import { BaseLoginRequestDto } from 'src/modules/auth/infrastructure/dtos/requests/base.login.request.dto';
 
 @Controller('User')
+@ApiTags('Auth')
 export class UserController {
   constructor(private readonly commandBus: CommandBus) {}
 

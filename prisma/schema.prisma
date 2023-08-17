@@ -28,9 +28,9 @@ model User {
 }
 
 model Post {
-  id     Int    @id
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id])
+  id     String    @id
+  user_id String? @map("user_id")
+  user   User?   @relation(fields: [user_id], references: [id])
   title  String
   content String
 
@@ -49,7 +49,7 @@ model Product {
   category_id String?            @map("category_id")
   genre_id    String?           @map("genre_id")
   category    CategoryProduct? @relation(fields: [category_id], references: [id])
-  genre     GenreProduct?    @relation(fields: [genre_id], references: [id])
+  genre       GenreProduct?    @relation(fields: [genre_id], references: [id])
   created_at  DateTime        @default(now()) @map("created_at")
   updated_at  DateTime        @updatedAt @map("updated_at")
 
@@ -57,7 +57,7 @@ model Product {
 }
 
 model CategoryProduct {
-  id       String       @id
+  id                 String       @id
   name               String    // Category Product Name: makanan & minuman
   created_at         DateTime  @default(now())
   updated_at         DateTime  @updatedAt

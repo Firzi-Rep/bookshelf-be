@@ -13,9 +13,9 @@ Table user {
 }
 
 Table post {
-  id Int [pk]
-  userId String [not null]
-  user user [not null]
+  id String [pk]
+  userId String
+  user user
   title String [not null]
   content String [not null]
 }
