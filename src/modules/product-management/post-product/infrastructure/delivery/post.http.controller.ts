@@ -9,6 +9,7 @@ import {
   Query,
   Param,
   Patch,
+  Put,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiTags } from '@nestjs/swagger';
@@ -19,7 +20,12 @@ import {
   CreatePostCommand,
   CreatePostCommandResult,
 } from 'src/modules/product-management/post-product/application/commands/create.post.command';
+import {
+  UpdatePostCommand,
+  UpdatePostCommandResult,
+} from 'src/modules/product-management/post-product/application/commands/update.post.command';
 import { CreatePostDto } from 'src/modules/product-management/post-product/infrastructure/dto/create.post.dto';
+import { UpdatePostDto } from 'src/modules/product-management/post-product/infrastructure/dto/update.post.dto';
 
 @Controller('product-management/post')
 @ApiTags('Post')
@@ -45,6 +51,31 @@ export class PostController {
         data: result,
         message: ' Created Successfully!',
         statusCode: HttpStatus.CREATED,
+      });
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  @Put(':id')
+  async update(
+    @Res() res: Response,
+    @Body() dto: UpdatePostDto,
+    @Param('id') id: string,
+  ) {
+    try {
+      const command = Builder<UpdatePostCommand>(UpdatePostCommand, {
+        ...dto,
+        id,
+      }).build();
+
+      const result = await this.commandBus.execute<
+        UpdatePostCommand,
+        UpdatePostCommandResult
+      >(command);
+
+      return baseHttpResponseHelper(res, {
+        data: result,
       });
     } catch (e) {
       throw e;
@@ -108,28 +139,4 @@ export class PostController {
   //   }
 
   //   @UseGuards(TenderJwtGuard)
-  //   @Post('update')
-  //   async update(@Res() res: Response, @Body() dto: UpdateDto) {
-  //     try {
-  //          const command = Builder<Command>(
-  //              UpdateCommand,
-  //          {
-  //               ...dto,
-  //          },
-  //          ).build();
-
-  //      const result = await this.commandBus.execute<
-  //          UpdateCommand,
-  //          UpdateCommandResult
-  //      >(command);
-
-  //      return baseHttpResponseHelper(res, {
-  //          data: result,
-  //          message: ' Updated Successfully!',
-  //          statusCode: HttpStatus.OK,
-  //      });
-  //        } catch (e) {
-  //          throw e;
-  //        }
-  //  }
 }

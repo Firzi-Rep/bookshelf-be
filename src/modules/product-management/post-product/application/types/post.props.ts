@@ -7,3 +7,9 @@ export interface CreatePostProps {
   content: string;
   user: UserEntity;
 }
+
+export interface UpdatePostProps {
+  id: string;
+  title: string;
+  content: string;
+}

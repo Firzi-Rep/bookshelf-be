@@ -1,6 +1,7 @@
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CreatePostCommandHandler } from 'src/modules/product-management/post-product/application/commands/create.post.command';
+import { UpdatePostCommandHandler } from 'src/modules/product-management/post-product/application/commands/update.post.command';
 import { POST_REPOSITORY } from 'src/modules/product-management/post-product/application/ports/post.repository';
 import { PostgresqlPostAdapter } from 'src/modules/product-management/post-product/infrastructure/adapter/postgresql.post.adapter';
 import { PostController } from 'src/modules/product-management/post-product/infrastructure/delivery/post.http.controller';
@@ -11,7 +12,10 @@ const repositories: Provider[] = [
     useClass: PostgresqlPostAdapter,
   },
 ];
-const commands: Provider[] = [CreatePostCommandHandler];
+const commands: Provider[] = [
+  CreatePostCommandHandler,
+  UpdatePostCommandHandler,
+];
 const queryHandlers: Provider[] = [
   // ProductDetailQueryHandler,
   // ProductFindManyQueryHandler,

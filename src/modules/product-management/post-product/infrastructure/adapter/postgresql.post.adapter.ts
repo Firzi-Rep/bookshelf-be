@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Builder } from 'builder-pattern';
-import { CreatePostProps } from 'src/modules/product-management/post-product/application/types/post.props';
+import {
+  CreatePostProps,
+  UpdatePostProps,
+} from 'src/modules/product-management/post-product/application/types/post.props';
 import { PostEntity } from 'src/modules/product-management/post-product/domain/post.entity';
 import { PrismaService } from 'src/modules/shared/prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
@@ -35,27 +38,27 @@ export class PostgresqlPostAdapter {
     }
   }
 
-  //    async update(props: UpdateProps, session?: PrismaService): Promise<Entity> {
-  //       let prisma = this.prismaService;
-  //       if (session) prisma = session;
-  //       try {
-  //           const rawUpdated = await prisma..update({
-  //                where: {},
-  //                data: {}
-  //            });
+  async update(
+    props: UpdatePostProps,
+    session?: PrismaService,
+  ): Promise<PostEntity> {
+    let prisma = this.prismaService;
+    if (session) prisma = session;
+    try {
+      const rawUpdated = await prisma.post.update({
+        where: { id: props.id },
+        data: { title: props.title, content: props.content },
+      });
 
-  //            const updatedEntity = Builder<Entity>(
-  //                Entity,
-  //                {
-  //                    ...rawUpdated,
-  //                },
-  //            ).build();
-  //            return updatedEntity;
-  //       } catch (error) {
-  //       console.trace(error);
-  //           throw error;
-  //       }
-  //    }
+      const updatedEntity = Builder<PostEntity>(PostEntity, {
+        ...rawUpdated,
+      }).build();
+      return updatedEntity;
+    } catch (error) {
+      console.trace(error);
+      throw error;
+    }
+  }
 
   // async findById(: string, session?: PrismaService): Promise<Entity | null> {
   //    let prisma = this.prismaService;

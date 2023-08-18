@@ -7,7 +7,7 @@ import { ProductManagementModule } from 'src/modules/product-management/product.
 import { UserModule } from 'src/modules/auth/auth.module';
 
 @Module({
-  imports: [CqrsModule, SharedModule, ProductManagementModule, UserModule],
+  imports: [CqrsModule, SharedModule, UserModule, ProductManagementModule],
   controllers: [AppController],
   providers: [AppService],
 })
