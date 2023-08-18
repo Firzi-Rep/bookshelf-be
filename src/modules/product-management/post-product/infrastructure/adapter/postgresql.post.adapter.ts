@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Builder } from 'builder-pattern';
+import { UserEntity } from 'src/modules/auth/domain/user.entity';
+import { FindManyPostQueryProps } from 'src/modules/product-management/post-product/application/ports/post.repository';
 import {
   CreatePostProps,
   UpdatePostProps,
@@ -60,6 +62,42 @@ export class PostgresqlPostAdapter {
     }
   }
 
+  async findMany(props: FindManyPostQueryProps): Promise<PostEntity[]> {
+    const { page, limit } = props;
+
+    const getLimit = limit ? limit : 10;
+    const getPage = page ? page : 1;
+    const offset = (getPage - 1) * getLimit;
+
+    const result = await this.prismaService.post.findMany({
+      skip: offset,
+      take: getLimit,
+      include: {
+        user: true,
+      },
+    });
+    // console.log('masuk gak ni gan', result);
+
+    const entity = result.map((item) => {
+      const userEntity = Builder<UserEntity>(UserEntity, {
+        ...item.user,
+      }).build();
+
+      return Builder<PostEntity>(PostEntity, {
+        ...item,
+        user: userEntity,
+      }).build();
+    });
+
+    return entity;
+  }
+
+  async countMany(props: FindManyPostQueryProps): Promise<number> {
+    const result = await this.prismaService.post.count();
+
+    return result;
+  }
+
   // async findById(: string, session?: PrismaService): Promise<Entity | null> {
   //    let prisma = this.prismaService;
   //    if (session) prisma = session;
@@ -71,55 +109,6 @@ export class PostgresqlPostAdapter {
   //        return Builder<Entity>(Entity, {
   //            ...result,
   //        }).build();
-  //    } catch (error) {
-  //    console.trace(error);
-  //        throw error;
-  //    }
-  // }
-
-  // async findMany(props: FindManyProps, session?: PrismaService): Promise<Entity[]> {
-  //    let prisma = this.prismaService;
-  //    if (session) prisma = session;
-  //    try {
-  //        const { limit = 0, page = 0, sort_by, sort_direction } = props;
-  //        const offset = (page - 1) * limit;
-  //        const getSortBy = sort_by ? sort_by : 'created_at';
-  //        const getSortDirection = sort_direction ? sort_direction : 'desc';
-
-  //        let queryOptions: Prisma.ProductFindManyArgs = {
-  //        where: clause,
-
-  //        orderBy: {
-  //            [getSortBy]: getSortDirection,
-  //        },
-  // };
-
-  //        if (limit > 0) {
-  //        queryOptions = {
-  //            ...queryOptions,
-  //            skip: offset,
-  //            take: limit,
-  //        };
-  // }
-
-  //    const rawProducts = await prisma.product.findMany(queryOptions);
-  //    const productEntities = rawProducts.map((rawProducts) => {
-  //    return Builder<CatalogProductEntity>(CatalogProductEntity, {
-  //           ...rawProducts,
-  //    }).build();
-  // });
-
-  //    } catch (error) {
-  //    console.trace(error);
-  //        throw error;
-  //    }
-  // }
-
-  // async countMany(props: FindManyProps, session?: PrismaService): Promise<number> {
-  //    let prisma = this.prismaService;
-  //    if (session) prisma = session;
-  //    try {
-
   //    } catch (error) {
   //    console.trace(error);
   //        throw error;

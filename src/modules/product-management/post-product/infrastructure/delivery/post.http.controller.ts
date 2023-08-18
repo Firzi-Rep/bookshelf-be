@@ -15,7 +15,10 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiTags } from '@nestjs/swagger';
 import { Builder } from 'builder-pattern';
 import { Response } from 'express';
-import { baseHttpResponseHelper } from 'src/core/helper/base.response.helper';
+import {
+  baseHttpResponseHelper,
+  basePaginatedResponseHelper,
+} from 'src/core/helper/base.response.helper';
 import {
   CreatePostCommand,
   CreatePostCommandResult,
@@ -24,7 +27,12 @@ import {
   UpdatePostCommand,
   UpdatePostCommandResult,
 } from 'src/modules/product-management/post-product/application/commands/update.post.command';
+import {
+  PostFindManyQuery,
+  PostFindManyQueryResult,
+} from 'src/modules/product-management/post-product/application/query/find.many.query.post';
 import { CreatePostDto } from 'src/modules/product-management/post-product/infrastructure/dto/create.post.dto';
+import { FindManyQueryPostDto } from 'src/modules/product-management/post-product/infrastructure/dto/find.many.query.post.dto';
 import { UpdatePostDto } from 'src/modules/product-management/post-product/infrastructure/dto/update.post.dto';
 
 @Controller('product-management/post')
@@ -82,38 +90,24 @@ export class PostController {
     }
   }
 
-  //   @Get()
-  //   async findMany(
-  //     @Res() res: Response,
-  //     @Query() dto: FindManyQueryDto,
-  //   ) {
-  //     const { page, limit } = dto;
+  @Get('find-many')
+  async findMany(@Res() res: Response, @Query() dto: FindManyQueryPostDto) {
+    const builder = Builder<PostFindManyQuery>(PostFindManyQuery, {
+      ...dto,
+    });
 
-  //     const responseBuilder = Builder<
-  //       BaseHttpPaginatedResponseDto<Entity[], any>
-  //     >(BaseHttpPaginatedResponseDto);
-  //     responseBuilder.statusCode(200);
-  //     responseBuilder.message(' List Fetched Successfully!');
+    const { data, total } = await this.queryBus.execute<
+      PostFindManyQuery,
+      PostFindManyQueryResult
+    >(builder.build());
 
-  //     const builder = Builder<FindManyQuery>(
-  //       FindManyQuery,
-  //       {
-  //         ...dto,
-  //       },
-  //     );
-
-  //     const { result, total } = await this.queryBus.execute<
-  //       FindManyQuery,
-  //       FindManyQueryResult
-  //     >(builder.build());
-
-  //     responseBuilder.data(result);
-  //     responseBuilder.page(page);
-  //     responseBuilder.per_page(limit);
-  //     responseBuilder.total(total);
-
-  //     return basePaginatedResponseHelper(res, responseBuilder.build());
-  //   }
+    return basePaginatedResponseHelper(res, {
+      data: data,
+      total,
+      page: dto.page,
+      per_page: dto.limit,
+    });
+  }
 
   //   @Get(':id')
   //   async findById(@Res() res: Response, @Param('id') id: string) {

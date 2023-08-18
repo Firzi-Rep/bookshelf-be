@@ -3,6 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { CreatePostCommandHandler } from 'src/modules/product-management/post-product/application/commands/create.post.command';
 import { UpdatePostCommandHandler } from 'src/modules/product-management/post-product/application/commands/update.post.command';
 import { POST_REPOSITORY } from 'src/modules/product-management/post-product/application/ports/post.repository';
+import { PostFindManyQueryHandler } from 'src/modules/product-management/post-product/application/query/find.many.query.post';
 import { PostgresqlPostAdapter } from 'src/modules/product-management/post-product/infrastructure/adapter/postgresql.post.adapter';
 import { PostController } from 'src/modules/product-management/post-product/infrastructure/delivery/post.http.controller';
 
@@ -17,8 +18,8 @@ const commands: Provider[] = [
   UpdatePostCommandHandler,
 ];
 const queryHandlers: Provider[] = [
-  // ProductDetailQueryHandler,
-  // ProductFindManyQueryHandler,
+  // PostDetailQueryHandler,
+  PostFindManyQueryHandler,
 ];
 @Module({
   imports: [CqrsModule],

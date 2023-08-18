@@ -6,8 +6,17 @@ import { PostEntity } from 'src/modules/product-management/post-product/domain/p
 
 export const POST_REPOSITORY = 'POST_REPOSITORY';
 
+export interface FindManyPostQueryProps {
+  limit?: number;
+  page?: number;
+}
+
 export interface PostRepository {
   create(props: CreatePostProps): Promise<PostEntity>;
 
   update(props: UpdatePostProps): Promise<PostEntity>;
+
+  findMany(props?: FindManyPostQueryProps): Promise<PostEntity[]>;
+
+  countMany(props?: FindManyPostQueryProps): Promise<number>;
 }

@@ -5,5 +5,6 @@ export class PostEntity {
   userId: string;
   title: string;
   content: string;
+  user_id?: string;
   user: UserEntity;
 }

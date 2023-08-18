@@ -13,3 +13,8 @@ export interface UpdatePostProps {
   title: string;
   content: string;
 }
+
+export interface QueryPostProps {
+  title: string;
+  content: string;
+}
