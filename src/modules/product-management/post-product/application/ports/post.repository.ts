@@ -19,4 +19,6 @@ export interface PostRepository {
   findMany(props?: FindManyPostQueryProps): Promise<PostEntity[]>;
 
   countMany(props?: FindManyPostQueryProps): Promise<number>;
+
+  deleteMany(ids: string[]): Promise<void>;
 }

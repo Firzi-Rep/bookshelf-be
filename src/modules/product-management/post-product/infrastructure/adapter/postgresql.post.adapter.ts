@@ -98,6 +98,21 @@ export class PostgresqlPostAdapter {
     return result;
   }
 
+  async deleteMany(ids: string[]): Promise<void> {
+    try {
+      await this.prismaService.post.deleteMany({
+        where: {
+          id: {
+            in: ids,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
   // async findById(: string, session?: PrismaService): Promise<Entity | null> {
   //    let prisma = this.prismaService;
   //    if (session) prisma = session;

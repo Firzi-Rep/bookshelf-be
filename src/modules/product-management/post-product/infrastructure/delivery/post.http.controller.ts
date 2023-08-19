@@ -24,6 +24,10 @@ import {
   CreatePostCommandResult,
 } from 'src/modules/product-management/post-product/application/commands/create.post.command';
 import {
+  DeletePostCommand,
+  DeletePostCommandResult,
+} from 'src/modules/product-management/post-product/application/commands/delete.post.command';
+import {
   UpdatePostCommand,
   UpdatePostCommandResult,
 } from 'src/modules/product-management/post-product/application/commands/update.post.command';
@@ -32,6 +36,7 @@ import {
   PostFindManyQueryResult,
 } from 'src/modules/product-management/post-product/application/query/find.many.query.post';
 import { CreatePostDto } from 'src/modules/product-management/post-product/infrastructure/dto/create.post.dto';
+import { DeletePostManyDto } from 'src/modules/product-management/post-product/infrastructure/dto/delete.post.dto';
 import { FindManyQueryPostDto } from 'src/modules/product-management/post-product/infrastructure/dto/find.many.query.post.dto';
 import { UpdatePostDto } from 'src/modules/product-management/post-product/infrastructure/dto/update.post.dto';
 
@@ -107,6 +112,24 @@ export class PostController {
       page: dto.page,
       per_page: dto.limit,
     });
+  }
+
+  @Post('delete-many')
+  async deleteMany(@Body() dto: DeletePostManyDto) {
+    // console.log("masuk ke controller create product dengan payload",dto)
+    const command = Builder<DeletePostCommand>(DeletePostCommand, {
+      ...dto,
+    }).build();
+
+    await this.commandBus.execute<DeletePostCommand, DeletePostCommandResult>(
+      command,
+    );
+
+    return {
+      statusCode: 200,
+      message: 'success',
+      data: null,
+    };
   }
 
   //   @Get(':id')
