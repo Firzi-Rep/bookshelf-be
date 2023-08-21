@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Builder } from 'builder-pattern';
-import { GenreRepository } from 'src/modules/product-management/genre-product/application/ports/genre.repository';
+import {
+  GenreFindManyQueryProps,
+  GenreRepository,
+} from 'src/modules/product-management/genre-product/application/ports/genre.repository';
 import {
   CreateGenreProps,
   UpdateGenreProps,
@@ -80,5 +83,41 @@ export class PostgresqlGenreAdapter implements GenreRepository {
       console.log(error);
       throw error;
     }
+  }
+
+  async findMany(props: GenreFindManyQueryProps): Promise<GenreEntity[]> {
+    const { page, limit } = props;
+
+    const getLimit = limit ? limit : 10;
+    const getPage = page ? page : 1;
+    const offset = (getPage - 1) * getLimit;
+
+    const result = await this.prismaService.product.findMany({
+      skip: offset,
+      take: getLimit,
+      include: {
+        genre: true,
+      },
+    });
+
+    const entity = result.map((item) => {
+      const genreEntity = Builder<GenreEntity>(GenreEntity, {
+        ...item.genre,
+      }).build();
+
+      // return Builder<ProductEntity>(ProductEntity, {
+      //   ...item,
+      //   category: categoryEntity,
+      // }).build();
+      return genreEntity;
+    });
+
+    return entity;
+  }
+
+  async countMany(props: GenreFindManyQueryProps): Promise<number> {
+    const result = await this.prismaService.categoryProduct.count();
+
+    return result;
   }
 }

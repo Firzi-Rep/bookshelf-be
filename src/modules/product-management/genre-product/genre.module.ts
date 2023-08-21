@@ -8,6 +8,7 @@ import {
   UpdateGenreCommandResult,
 } from 'src/modules/product-management/genre-product/application/command/update.genre.command';
 import { GENRE_REPOSITORY } from 'src/modules/product-management/genre-product/application/ports/genre.repository';
+import { GenreFindManyQueryHandler } from 'src/modules/product-management/genre-product/application/query/find.many.query.genre';
 import { PostgresqlGenreAdapter } from 'src/modules/product-management/genre-product/infrastructure/adapter/postgresql.genre';
 import { GenreController } from 'src/modules/product-management/genre-product/infrastructure/delivery/genre.http.controller';
 
@@ -26,7 +27,7 @@ const commands: Provider[] = [
 
 const queryHandlers: Provider[] = [
   CreateGenreCommandHandler,
-  // CategoryFindManyQueryHandler,
+  GenreFindManyQueryHandler,
 ];
 
 @Module({

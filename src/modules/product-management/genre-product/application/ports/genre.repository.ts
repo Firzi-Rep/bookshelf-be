@@ -16,9 +16,9 @@ export interface GenreRepository {
 
   // findById(id: string): Promise<ProductEntity>;
 
-  // findMany(props?: FindManyProductQueryProps): Promise<ProductEntity[]>;
+  findMany(props?: GenreFindManyQueryProps): Promise<GenreEntity[]>;
 
-  // countMany(props?: FindManyProductQueryProps): Promise<number>;
+  countMany(props?: GenreFindManyQueryProps): Promise<number>;
 
   update(props: UpdateGenreProps): Promise<GenreEntity>;
 

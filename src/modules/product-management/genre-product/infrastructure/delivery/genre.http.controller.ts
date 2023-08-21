@@ -15,7 +15,10 @@ import { Response } from 'express';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiTags } from '@nestjs/swagger';
 import { Builder } from 'builder-pattern';
-import { baseHttpResponseHelper } from 'src/core/helper/base.response.helper';
+import {
+  baseHttpResponseHelper,
+  basePaginatedResponseHelper,
+} from 'src/core/helper/base.response.helper';
 import {
   UpdateCategoryCommand,
   UpdateCategoryCommandResult,
@@ -36,6 +39,11 @@ import {
   DeleteGenreCommand,
   DeleteGenreCommandResult,
 } from 'src/modules/product-management/genre-product/application/command/delete.genre.command';
+import { FindManyQueryGenreDto } from 'src/modules/product-management/genre-product/infrastructure/dto/find.many.query.dto';
+import {
+  GenreFindManyQuery,
+  GenreFindManyQueryResult,
+} from 'src/modules/product-management/genre-product/application/query/find.many.query.genre';
 
 @Controller('product-management/genre')
 @ApiTags('Genre')
@@ -111,5 +119,24 @@ export class GenreController {
       message: 'success',
       data: null,
     };
+  }
+
+  @Get()
+  async findMany(@Res() res: Response, @Query() dto: FindManyQueryGenreDto) {
+    const builder = Builder<GenreFindManyQuery>(GenreFindManyQuery, {
+      ...dto,
+    });
+
+    const { data, total } = await this.queryBus.execute<
+      GenreFindManyQuery,
+      GenreFindManyQueryResult
+    >(builder.build());
+
+    return basePaginatedResponseHelper(res, {
+      data: data,
+      total,
+      // page: dto.page,
+      // per_page: dto.limit,
+    });
   }
 }
