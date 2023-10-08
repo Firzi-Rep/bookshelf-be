@@ -10,6 +10,7 @@ import { LoginResponse } from 'src/modules/auth/infrastructure/dtos/response/log
 
 export class LoginUserCommand {
   username: string;
+  email: string;
   login_id: string;
   password: string;
 }
