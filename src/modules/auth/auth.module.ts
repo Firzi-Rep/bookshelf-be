@@ -3,7 +3,7 @@ import { UserPostgresqlAdapter } from 'src/modules/auth/infrastructure/adapter/u
 import { Module, Provider } from '@nestjs/common';
 import { CreateUserCommandHandler } from 'src/modules/auth/applications/commands/create.user.command';
 import { CqrsModule } from '@nestjs/cqrs';
-import { UserController } from 'src/modules/auth/infrastructure/delivery/auth.http.controller';
+import { UsersController } from 'src/modules/auth/infrastructure/delivery/auth.http.controller';
 
 const repositories: Provider[] = [
   {
@@ -26,7 +26,7 @@ const queryHandlers: Provider[] = [
 @Module({
   imports: [CqrsModule],
   providers: [...commands, ...repositories, ...queryHandlers],
-  controllers: [UserController],
+  controllers: [UsersController],
   exports: [],
 })
 export class UserModule {}

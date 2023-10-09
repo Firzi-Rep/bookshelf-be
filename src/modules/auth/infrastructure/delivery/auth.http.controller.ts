@@ -1,74 +1,53 @@
 import {
   Body,
   Controller,
-  HttpException,
-  HttpStatus,
   Post,
-  Res,
+  HttpStatus,
+  HttpException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiTags } from '@nestjs/swagger';
-import { Builder } from 'builder-pattern';
-import { BaseHttpResponseDto } from 'src/core/dto/base.http.response.dto';
-import { baseHttpResponseHelper } from 'src/core/helper/base.response.helper';
 import {
   CreateUserCommand,
   CreateUserCommandResult,
 } from 'src/modules/auth/applications/commands/create.user.command';
-import { LoginUserCommand } from 'src/modules/auth/applications/commands/login.user.command';
-import { BaseLoginRequestDto } from 'src/modules/auth/infrastructure/dtos/requests/base.login.request.dto';
-import { LoginResponse } from 'src/modules/auth/infrastructure/dtos/response/login.response.dto';
+import { CreateUserDto } from 'src/modules/auth/infrastructure/dtos/create.user.dto';
 
-@Controller('User')
-@ApiTags('Auth')
-export class UserController {
+@Controller('users')
+@ApiTags('Authentication')
+export class UsersController {
   constructor(private readonly commandBus: CommandBus) {}
 
   @Post('create')
-  async create(@Body() dto: BaseLoginRequestDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
     try {
-      const command = Builder<CreateUserCommand>(CreateUserCommand, {
-        // category_name: dto.name
-        ...dto,
-      }).build();
+      // Kirim perintah untuk membuat pengguna
+      const createUserCommand = new CreateUserCommand(createUserDto);
+      const result: CreateUserCommandResult = await this.commandBus.execute(
+        createUserCommand,
+      );
 
-      const result = await this.commandBus.execute<
-        CreateUserCommand,
-        CreateUserCommandResult
-      >(command);
-
-      // console.log('result on controller', result);
-      return {
-        statusCode: 201,
-        message: 'success',
-        data: result.user,
-      };
+      // Jika berhasil membuat pengguna, Anda dapat mengembalikan respons yang sesuai
+      if (result.user) {
+        return {
+          statusCode: HttpStatus.CREATED,
+          message: 'User created successfully',
+          user: result.user,
+        };
+      } else {
+        // Tangani kasus gagal pembuatan pengguna
+        throw new HttpException(
+          'User creation failed',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     } catch (e) {
-      console.trace(e);
-      throw e;
-    }
-  }
-
-  @Post('login')
-  async login(@Body() loginData: BaseLoginRequestDto): Promise<LoginResponse> {
-    try {
-      const { username, email, login_id, password } = loginData;
-
-      const command = new LoginUserCommand();
-      command.username = username;
-      command.email = email;
-      command.login_id = login_id;
-      command.password = password;
-
-      const result = await this.commandBus.execute(command);
-
-      return {
-        jwt_token: result.jwt_token,
-        user: result.user,
-      };
-    } catch (error) {
       // Tangani kesalahan dengan baik sesuai kebutuhan Anda
-      throw new HttpException('Login failed', HttpStatus.UNAUTHORIZED);
+      console.error(e);
+      throw new HttpException(
+        'User creation failed',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

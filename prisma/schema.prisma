@@ -22,7 +22,6 @@ model User {
   password     String
   role         Role         @default(USER)
   post         Post[]
-  profileImage Bytes? // setelah ini harus diisi apa?
 
   @@map("user")
 }

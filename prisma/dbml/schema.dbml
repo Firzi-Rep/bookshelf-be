@@ -9,12 +9,11 @@ Table user {
   password String [not null]
   role Role [not null, default: 'USER']
   post post [not null]
-  profileImage Bytes
 }
 
 Table post {
   id String [pk]
-  userId String
+  user_id String
   user user
   title String [not null]
   content String [not null]
@@ -53,7 +52,7 @@ Enum Role {
   ADMIN
 }
 
-Ref: post.userId > user.id
+Ref: post.user_id > user.id
 
 Ref: product.category_id > category_product.id
 

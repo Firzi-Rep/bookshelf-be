@@ -26,7 +26,6 @@ export class PostgresqlPostAdapter {
           id: uuidv4(),
           title: props.title,
           content: props.content,
-          userId: props.userId,
         },
       });
 

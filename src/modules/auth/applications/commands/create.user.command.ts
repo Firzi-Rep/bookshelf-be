@@ -1,13 +1,14 @@
-import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { USER_REPOSITORY } from 'src/modules/auth/applications/ports/user.repository';
+import { Inject } from '@nestjs/common';
+import {
+  USER_REPOSITORY,
+  UserRepository,
+} from 'src/modules/auth/applications/ports/user.repository';
 import { UserEntity } from 'src/modules/auth/domain/user.entity';
-import { UserPostgresqlAdapter } from 'src/modules/auth/infrastructure/adapter/user.postgresql.adapter';
+import { CreateUserDto } from 'src/modules/auth/infrastructure/dtos/create.user.dto';
 
 export class CreateUserCommand {
-  username: string;
-  email: string;
-  password: string;
+  constructor(public createUserDto: CreateUserDto) {}
 }
 
 export class CreateUserCommandResult {
@@ -20,16 +21,25 @@ export class CreateUserCommandHandler
 {
   constructor(
     @Inject(USER_REPOSITORY)
-    private readonly userPostgresqlAdapter: UserPostgresqlAdapter,
+    private readonly userRepository: UserRepository,
   ) {}
 
-  async execute(command: CreateUserCommand) {
-    // console.log('masuk command product create ni bos wkwkwk' )
+  async execute(command: CreateUserCommand): Promise<CreateUserCommandResult> {
+    const { createUserDto } = command;
 
-    const result = await this.userPostgresqlAdapter.create({ ...command });
+    try {
+      // Di sini Anda dapat melakukan validasi atau pemrosesan tambahan pada DTO jika diperlukan.
 
-    return {
-      user: result,
-    };
+      // Selanjutnya, Anda dapat membuat pengguna dengan menggunakan UserRepository atau adapter yang sesuai.
+      const newUser = await this.userRepository.create(createUserDto);
+
+      return {
+        user: newUser,
+      };
+    } catch (e) {
+      // Tangani kesalahan dengan baik sesuai kebutuhan Anda
+      console.error(e);
+      throw e; // Anda dapat mengubah cara penanganan kesalahan ini sesuai kebutuhan Anda
+    }
   }
 }
