@@ -1,73 +1,61 @@
-import { Inject, UnauthorizedException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { JwtService } from '@nestjs/jwt';
-import { comparePassword } from 'src/core/utils/password.hash';
+import { Inject } from '@nestjs/common';
 import {
   USER_REPOSITORY,
   UserRepository,
 } from 'src/modules/auth/applications/ports/user.repository';
-import { LoginResponse } from 'src/modules/auth/infrastructure/dtos/response/login.response.dto';
+import { UserEntity } from 'src/modules/auth/domain/user.entity';
 
+// Buat command untuk operasi login
 export class LoginUserCommand {
-  username: string;
-  email: string;
-  login_id: string;
-  password: string;
+  constructor(public email: string, public password: string) {}
 }
 
+// Buat class result yang akan digunakan untuk mengembalikan hasil login
+export class LoginUserCommandResult {
+  user: UserEntity;
+  token: string;
+}
+
+// Handler untuk command login
 @CommandHandler(LoginUserCommand)
 export class LoginUserCommandHandler
-  implements ICommandHandler<LoginUserCommand>
+  implements ICommandHandler<LoginUserCommand, LoginUserCommandResult>
 {
   constructor(
     @Inject(USER_REPOSITORY)
-    private readonly userRepo: UserRepository,
-    private readonly jwtService: JwtService,
+    private readonly userRepository: UserRepository,
   ) {}
 
-  async execute(command: LoginUserCommand): Promise<LoginResponse> {
-    // console.log('payload on merchant login command', command);
-    const {
-      /* auth */
-      username,
-      login_id,
-      password,
-    } = command;
+  async execute(command: LoginUserCommand): Promise<LoginUserCommandResult> {
+    const { email, password } = command;
 
-    let email: string = '';
-    // Check if loginId is an email
-    // Email format: <sequence of non-whitespace characters>@<sequence of non-whitespace characters>.<sequence of non-whitespace characters>
-    if (/^\S+@\S+\.\S+$/.test(login_id)) email = login_id;
+    try {
+      // Di sini Anda dapat memeriksa apakah pengguna dengan email yang diberikan ada di database
+      const user = await this.userRepository.findByEmail(email);
 
-    // Check if loginId is a phone number
-    // Phone number format: <sequence of digits>
-    // if (/^\d+$/.test(login_id)) phone = login_id;
+      if (!user) {
+        throw new Error('Pengguna tidak ditemukan');
+      }
 
-    // const hashedPassword = await hashPassword(password);
+      // Selanjutnya, Anda dapat memeriksa apakah kata sandi yang diberikan cocok dengan kata sandi yang disimpan
+      const isPasswordValid = await user.comparePassword(password);
 
-    const user = await this.userRepo.checkExistence({
-      username,
-      email,
-    });
-    // console.log(user);
+      if (!isPasswordValid) {
+        throw new Error('Kata sandi salah');
+      }
 
-    if (!user) throw new UnauthorizedException('Wrong Credentials');
+      // Jika email dan kata sandi valid, Anda dapat menghasilkan token JWT di sini
+      const token = 'generate-your-jwt-token-here'; // Anda harus mengganti ini dengan logika pembuatan token yang sesuai
 
-    const comparedPassword = await comparePassword(password, user.password);
-    if (!comparedPassword) throw new UnauthorizedException('Wrong Credentials');
-    // console.log(comparedPassword);
-
-    const jwtPayload = {
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    };
-
-    return {
-      jwt_token: this.jwtService.sign(jwtPayload),
-      user: {
-        ...user,
-      },
-    };
+      return {
+        user,
+        token,
+      };
+    } catch (e) {
+      // Tangani kesalahan dengan baik sesuai kebutuhan Anda
+      console.error(e);
+      throw e; // Anda dapat mengubah cara penanganan kesalahan ini sesuai kebutuhan Anda
+    }
   }
 }

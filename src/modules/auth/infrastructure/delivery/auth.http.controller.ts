@@ -6,12 +6,17 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import {
   CreateUserCommand,
   CreateUserCommandResult,
 } from 'src/modules/auth/applications/commands/create.user.command';
+import {
+  LoginUserCommand,
+  LoginUserCommandResult,
+} from 'src/modules/auth/applications/commands/login.user.command';
 import { CreateUserDto } from 'src/modules/auth/infrastructure/dtos/create.user.dto';
+import { BaseLoginRequestDto } from 'src/modules/auth/infrastructure/dtos/requests/base.login.request.dto';
 
 @Controller('users')
 @ApiTags('Authentication')
@@ -49,5 +54,20 @@ export class UsersController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  @Post('login')
+  @ApiBody({ type: BaseLoginRequestDto }) // Menggunakan DTO sebagai tipe body request
+  async loginUser(
+    @Body() loginData: BaseLoginRequestDto,
+  ): Promise<LoginUserCommandResult> {
+    const { username, password } = loginData;
+
+    // Kirim command login ke CommandBus untuk ditangani oleh handler
+    const result = await this.commandBus.execute(
+      new LoginUserCommand(username, password),
+    );
+
+    return result;
   }
 }

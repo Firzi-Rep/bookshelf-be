@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { Prisma, Role } from '@prisma/client';
 import { Builder } from 'builder-pattern';
 import {
-  CheckUserExistenceProps,
   CreateUserProps,
   UserRepository,
 } from 'src/modules/auth/applications/ports/user.repository';
@@ -11,6 +10,7 @@ import { PrismaService } from 'src/modules/shared/prisma/prisma.service';
 
 const { v4: uuidv4 } = require('uuid');
 import { hash } from 'bcrypt';
+import { comparePassword } from 'src/core/utils/password.hash';
 
 @Injectable()
 export class UserPostgresqlAdapter implements UserRepository {
@@ -45,33 +45,17 @@ export class UserPostgresqlAdapter implements UserRepository {
       throw error;
     }
   }
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        OR: [{ username: email }, { email: email }],
+      },
+    });
 
-  async checkExistence(props: CheckUserExistenceProps): Promise<UserEntity> {
-    try {
-      const { email, username, excluded_id } = props;
-      const clause: Prisma.UserWhereInput = {};
-
-      const orClause: Prisma.UserWhereInput[] = [];
-      if (email && email !== '') orClause.push({ email });
-      if (username && username !== '') orClause.push({ username });
-      clause.OR = orClause;
-
-      if (excluded_id) {
-        clause.id = {
-          notIn: [excluded_id],
-        };
-      }
-
-      // console.log('clause', clause);
-      const result = await this.prismaService.user.findFirst({
-        where: clause,
-      });
-
-      if (result) return Builder<UserEntity>(UserEntity, result).build();
-
+    if (!user) {
       return null;
-    } catch (err) {
-      throw err;
     }
+
+    return user as UserEntity; // Kembalikan hasil sebagai UserEntity
   }
 }

@@ -1,5 +1,5 @@
-export class LoginResponse {
-  jwt_token: string;
+export class LoginResponseDto {
+  accessToken: string;
   user: {
     id?: string;
     email: string;

@@ -8,17 +8,7 @@ export interface CreateUserProps {
   password?: string;
   role?: string;
 }
-
-export interface CheckUserExistenceProps {
-  username: string;
-  email?: string;
-  excluded_id?: string;
-}
-
 export interface UserRepository {
   create(props: CreateUserProps): Promise<UserEntity>;
-
-  checkExistence(props: CheckUserExistenceProps): Promise<UserEntity | null>;
-
-  // findById(): Promise<any>;
+  findByEmail(email: string): Promise<UserEntity | null>;
 }
